@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.BusinessPage {
+  height: 100vh;
+  background-color: rgb(188, 209, 209);
+}
+.BusinessPage >.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.BusinessPage >.form-container> .form {
+  padding: 10px;
+  margin: 10px 20px;
+}
