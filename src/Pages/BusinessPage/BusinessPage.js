@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BusinessPage = ({ firebase,history }) => {
+const BusinessPage = ({ firebase, history }) => {
   const classes = useStyles();
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [successSnackBarOpen, setSuccessSnackBarOpen] = useState(false);
@@ -33,15 +33,15 @@ const BusinessPage = ({ firebase,history }) => {
   const [disabled, setDisabled] = useState(false);
   const [user, setUser] = useState(false);
 
-    useEffect(() => {
-      firebase.auth.onAuthStateChanged(async (userAuth) => {
-        if (!userAuth) {
-          history.push("/login");
-        } else {
-          setUser(userAuth);
-        }
-      });
-    }, []);
+  useEffect(() => {
+    firebase.auth.onAuthStateChanged(async (userAuth) => {
+      if (!userAuth) {
+        history.push("/login");
+      } else {
+        setUser(userAuth);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (
@@ -99,101 +99,110 @@ const BusinessPage = ({ firebase,history }) => {
     setUrl("");
     setAttachment("");
   };
-  return user &&(
-    <>
-      <Grid className="BusinessPage">
-        <Grid className="form-container">
-          <Paper elevation={10} className="form">
-            <Grid align="center">
-              <h1>Contact Us</h1>
-            </Grid>
-            <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-              <TextField
-                error={nameError.length > 0}
-                helperText={nameError}
-                autoFocus
-                id="name"
-                label="Enter Name"
-                type="text"
-                variant="outlined"
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </FormControl>
-            <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-              <TextField
-                error={emailError.length > 0}
-                helperText={emailError}
-                id="email"
-                label="Enter Email"
-                type="email"
-                variant="outlined"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </FormControl>
-            <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-              <TextField
-                error={urlError.length > 0}
-                helperText={urlError}
-                id="url"
-                label="URL of Videos"
-                type="textarea"
-                variant="outlined"
-                placeholder="urls..."
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                required
-              />
-            </FormControl>
-            <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-              <TextField
-                // error={emailError.length > 0}
-                // helperText={emailError}
-                id="attachment"
-                label="Attachments"
-                type="text"
-                variant="outlined"
-                placeholder="attachment"
-                value={attachment}
-                onChange={(e) => setAttachment(e.target.value)}
-                required
-              />
-            </FormControl>
+  return (
+    user && (
+      <>
+        <Grid className="BusinessPage">
+          <Grid className="form-container">
+            <Paper elevation={10} className="form">
+              <Grid align="center">
+                <h1>Contact Us</h1>
+              </Grid>
+              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
+                <TextField
+                  error={nameError.length > 0}
+                  helperText={nameError}
+                  autoFocus
+                  id="name"
+                  label="Enter Name"
+                  type="text"
+                  variant="outlined"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
+                <TextField
+                  error={emailError.length > 0}
+                  helperText={emailError}
+                  id="email"
+                  label="Enter Email"
+                  type="email"
+                  variant="outlined"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
+                <TextField
+                  error={urlError.length > 0}
+                  helperText={urlError}
+                  id="url"
+                  label="URL of Videos"
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                  placeholder="urls..."
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
+                <TextField
+                  // error={emailError.length > 0}
+                  // helperText={emailError}
+                  id="attachment"
+                  label="Attachments"
+                  type="text"
+                  variant="outlined"
+                  placeholder="attachment"
+                  value={attachment}
+                  onChange={(e) => setAttachment(e.target.value)}
+                />
+              </FormControl>
 
-            <FormControl className={clsx(classes.withoutLabel)} fullWidth>
               {isFormSubmitting ? (
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div
+                  className={clsx(classes.withoutLabel)}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
                   <CircularProgress color="secondary" />
                 </div>
               ) : (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={disabled}
-                  onClick={handleFormSubmit}
-                >
-                  Submit
-                </Button>
+                <FormControl className={clsx(classes.withoutLabel)}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={disabled}
+                    onClick={handleFormSubmit}
+                  >
+                    Submit
+                  </Button>
+                </FormControl>
               )}
-            </FormControl>
-          </Paper>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-      <PopUpToast
-        successSnackBarOpen={successSnackBarOpen}
-        setSuccessSnackBarOpen={setSuccessSnackBarOpen}
-        vertical="top"
-        horizontal="center"
-        severity="success"
-        message="Form Submitted Succesfully"
-      />
-    </>
+        <PopUpToast
+          successSnackBarOpen={successSnackBarOpen}
+          setSuccessSnackBarOpen={setSuccessSnackBarOpen}
+          vertical="top"
+          horizontal="center"
+          severity="success"
+          message="Form Submitted Succesfully"
+        />
+      </>
+    )
   );
 };
 const Component = withFirebase(BusinessPage);
