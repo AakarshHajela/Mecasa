@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core/";
 import "./BusinessPage.css";
 import { PopUpToast } from "../../components";
-import { Container,Row,Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ButtonsComponent from "./ButtonsComponent";
 
@@ -38,7 +38,6 @@ const BusinessPage = ({ firebase, history }) => {
   const [urlError, setUrlError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [user, setUser] = useState(false);
-  const [status, setStatus] = useState(0);
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
@@ -86,9 +85,8 @@ const BusinessPage = ({ firebase, history }) => {
       url,
       email,
       attachment,
-      status,
+      status: 0,
     };
-    setStatus(0);
     obj.timestamp = firebase.fromSecondsToTimestamp();
     let res = await firebase.addBusinessForm(obj);
     if (res) {
@@ -106,109 +104,126 @@ const BusinessPage = ({ firebase, history }) => {
     setAttachment("");
   };
 
-  const handleChange=(e) => {
-    if(e.target.files[0]){
-      var att=e.target.files[0];
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      var att = e.target.files[0];
       setAttachment(att);
     }
-  }
+  };
   return (
     user && (
       <>
         <Grid className="BusinessPage">
           <Grid className="form-container">
-          <div class="float-container">
-            <div class="float-child-button">
-            <Container>
-              <ButtonsComponent/>
-            </Container>
-            </div>
-            <Container>
-            <div class="float-child">
-            <Paper elevation={10} className="form">
-              <Grid align="center">
-                <h1>Contact Us</h1>
-              </Grid>
-              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-                <TextField
-                  style={{marginRight:10, marginLeft:10}}
-                  error={nameError.length > 0}
-                  helperText={nameError}
-                  autoFocus
-                  id="name"
-                  label="Enter Name"
-                  type="text"
-                  variant="outlined"
-                  placeholder="Enter your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </FormControl>
-              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-                <TextField
-                  style={{marginRight:10, marginLeft:10}}
-                  error={emailError.length > 0}
-                  helperText={emailError}
-                  id="email"
-                  label="Enter Email"
-                  type="email"
-                  variant="outlined"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </FormControl>
-              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-                <TextField
-                  style={{marginRight:10, marginLeft:10}}
-                  error={urlError.length > 0}
-                  helperText={urlError}
-                  id="url"
-                  label="URL of Videos"
-                  multiline
-                  rows={3}
-                  variant="outlined"
-                  placeholder="urls..."
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  required
-                />
-              </FormControl>
-              <Typography style={{marginTop:15, marginLeft:10, fontSize:20}}>Attachment</Typography>
-                <div>
-                <Input style={{marginLeft:10}} type='file' onChange={handleChange}></Input>
-                </div>
+            <div class="float-container">
+              <div class="float-child-button">
+                <Container>
+                  <ButtonsComponent />
+                </Container>
+              </div>
+              <Container>
+                <div class="float-child">
+                  <Paper elevation={10} className="form">
+                    <Grid align="center">
+                      <h1>Contact Us</h1>
+                    </Grid>
+                    <FormControl
+                      className={clsx(classes.withoutLabel)}
+                      fullWidth
+                    >
+                      <TextField
+                        style={{ marginRight: 10, marginLeft: 10 }}
+                        error={nameError.length > 0}
+                        helperText={nameError}
+                        autoFocus
+                        id="name"
+                        label="Enter Name"
+                        type="text"
+                        variant="outlined"
+                        placeholder="Enter your name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                    </FormControl>
+                    <FormControl
+                      className={clsx(classes.withoutLabel)}
+                      fullWidth
+                    >
+                      <TextField
+                        style={{ marginRight: 10, marginLeft: 10 }}
+                        error={emailError.length > 0}
+                        helperText={emailError}
+                        id="email"
+                        label="Enter Email"
+                        type="email"
+                        variant="outlined"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </FormControl>
+                    <FormControl
+                      className={clsx(classes.withoutLabel)}
+                      fullWidth
+                    >
+                      <TextField
+                        style={{ marginRight: 10, marginLeft: 10 }}
+                        error={urlError.length > 0}
+                        helperText={urlError}
+                        id="url"
+                        label="URL of Videos"
+                        multiline
+                        rows={3}
+                        variant="outlined"
+                        placeholder="urls..."
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        required
+                      />
+                    </FormControl>
+                    <Typography
+                      style={{ marginTop: 15, marginLeft: 10, fontSize: 20 }}
+                    >
+                      Attachment
+                    </Typography>
+                    <div>
+                      <Input
+                        style={{ marginLeft: 10 }}
+                        type="file"
+                        onChange={handleChange}
+                      ></Input>
+                    </div>
 
-              {isFormSubmitting ? (
-                <div
-                  className={clsx(classes.withoutLabel)}
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                  }}
-                >
-                  <CircularProgress color="secondary" />
+                    {isFormSubmitting ? (
+                      <div
+                        className={clsx(classes.withoutLabel)}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "100%",
+                        }}
+                      >
+                        <CircularProgress color="secondary" />
+                      </div>
+                    ) : (
+                      <FormControl className={clsx(classes.withoutLabel)}>
+                        <Button
+                          style={{ margin: 5 }}
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          disabled={disabled}
+                          onClick={handleFormSubmit}
+                        >
+                          Submit
+                        </Button>
+                      </FormControl>
+                    )}
+                  </Paper>
                 </div>
-              ) : (
-                <FormControl className={clsx(classes.withoutLabel)}>
-                  <Button
-                    style={{margin:5}}
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={disabled}
-                    onClick={handleFormSubmit}
-                  >
-                    Submit
-                  </Button>
-                </FormControl>
-              )}
-            </Paper>
-            </div>
-            </Container>
+              </Container>
             </div>
           </Grid>
         </Grid>
