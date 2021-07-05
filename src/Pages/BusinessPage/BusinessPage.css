@@ -13,7 +13,33 @@
   justify-content: center;
   height: 100%;
 }
-.BusinessPage >.form-container> .form {
+.form {
   padding: 10px;
   margin: 10px 20px;
+  width: 700px;
+  height: 550px;
+}
+
+.float-container {
+  border: 3px solid #fff;
+  padding: 10px;
+  width: 1000px;
+  height: 630px;
+}
+
+.float-child-button {
+  width: 20%;
+  float: left;
+  padding: 20px;
+}
+
+.float-child {
+  width: 80%;
+  float: left;
+  padding: 20px;
+}  
+
+.card {
+  width: 650px;
+  height: 30px;
 }

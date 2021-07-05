@@ -119,9 +119,9 @@ class FireBase {
   };
 
 
-  getForms = () => {
-    return this.businessFormRef.orderBy("timestamp", "desc").get();
-  };
+  getForms = (status) => {
+    return this.businessFormRef.where('status','==',status).orderBy("timestamp", "desc").get();
+}
 
   addBusinessForm = async (record) => {
     return this.businessFormRef.add({ ...record });

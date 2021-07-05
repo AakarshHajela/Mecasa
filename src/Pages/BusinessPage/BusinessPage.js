@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { withRouter } from "react-router-dom";
 import { withFirebase } from "../../firebase";
+import Input from "@material-ui/core/Input";
+import Typography from "@material-ui/core/Typography";
 import {
   TextField,
   Grid,
@@ -13,6 +15,10 @@ import {
 } from "@material-ui/core/";
 import "./BusinessPage.css";
 import { PopUpToast } from "../../components";
+import { Container,Row,Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import ButtonsComponent from "./ButtonsComponent";
+
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
     marginTop: theme.spacing(4),
@@ -26,12 +32,13 @@ const BusinessPage = ({ firebase, history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
-  const [attachment, setAttachment] = useState("");
+  const [attachment, setAttachment] = useState();
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [urlError, setUrlError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [user, setUser] = useState(false);
+  const [status, setStatus] = useState(0);
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
@@ -79,10 +86,9 @@ const BusinessPage = ({ firebase, history }) => {
       url,
       email,
       attachment,
-      pending: true,
-      ongoing: false,
-      done: false,
+      status,
     };
+    setStatus(0);
     obj.timestamp = firebase.fromSecondsToTimestamp();
     let res = await firebase.addBusinessForm(obj);
     if (res) {
@@ -99,17 +105,33 @@ const BusinessPage = ({ firebase, history }) => {
     setUrl("");
     setAttachment("");
   };
+
+  const handleChange=(e) => {
+    if(e.target.files[0]){
+      var att=e.target.files[0];
+      setAttachment(att);
+    }
+  }
   return (
     user && (
       <>
         <Grid className="BusinessPage">
           <Grid className="form-container">
+          <div class="float-container">
+            <div class="float-child-button">
+            <Container>
+              <ButtonsComponent/>
+            </Container>
+            </div>
+            <Container>
+            <div class="float-child">
             <Paper elevation={10} className="form">
               <Grid align="center">
                 <h1>Contact Us</h1>
               </Grid>
               <FormControl className={clsx(classes.withoutLabel)} fullWidth>
                 <TextField
+                  style={{marginRight:10, marginLeft:10}}
                   error={nameError.length > 0}
                   helperText={nameError}
                   autoFocus
@@ -125,6 +147,7 @@ const BusinessPage = ({ firebase, history }) => {
               </FormControl>
               <FormControl className={clsx(classes.withoutLabel)} fullWidth>
                 <TextField
+                  style={{marginRight:10, marginLeft:10}}
                   error={emailError.length > 0}
                   helperText={emailError}
                   id="email"
@@ -139,12 +162,13 @@ const BusinessPage = ({ firebase, history }) => {
               </FormControl>
               <FormControl className={clsx(classes.withoutLabel)} fullWidth>
                 <TextField
+                  style={{marginRight:10, marginLeft:10}}
                   error={urlError.length > 0}
                   helperText={urlError}
                   id="url"
                   label="URL of Videos"
                   multiline
-                  rows={4}
+                  rows={3}
                   variant="outlined"
                   placeholder="urls..."
                   value={url}
@@ -152,19 +176,10 @@ const BusinessPage = ({ firebase, history }) => {
                   required
                 />
               </FormControl>
-              <FormControl className={clsx(classes.withoutLabel)} fullWidth>
-                <TextField
-                  // error={emailError.length > 0}
-                  // helperText={emailError}
-                  id="attachment"
-                  label="Attachments"
-                  type="text"
-                  variant="outlined"
-                  placeholder="attachment"
-                  value={attachment}
-                  onChange={(e) => setAttachment(e.target.value)}
-                />
-              </FormControl>
+              <Typography style={{marginTop:15, marginLeft:10, fontSize:20}}>Attachment</Typography>
+                <div>
+                <Input style={{marginLeft:10}} type='file' onChange={handleChange}></Input>
+                </div>
 
               {isFormSubmitting ? (
                 <div
@@ -180,6 +195,7 @@ const BusinessPage = ({ firebase, history }) => {
               ) : (
                 <FormControl className={clsx(classes.withoutLabel)}>
                   <Button
+                    style={{margin:5}}
                     type="submit"
                     variant="contained"
                     color="primary"
@@ -191,6 +207,9 @@ const BusinessPage = ({ firebase, history }) => {
                 </FormControl>
               )}
             </Paper>
+            </div>
+            </Container>
+            </div>
           </Grid>
         </Grid>
         <PopUpToast

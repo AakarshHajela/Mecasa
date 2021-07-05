@@ -3,6 +3,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./Utils/PrivateRoute/PrivateRoute";
 import Page404 from "./Pages/Page404";
 import { UserSignIn, UserSignUp, ForgotPassword, BusinessPage } from "./Pages";
+import Pending from "./Pages/BusinessPage/Pending";
+import Ongoing from "./Pages/BusinessPage/Ongoing";
+import Done from "./Pages/BusinessPage/Done";
 
 const Main = () => {
   return (
@@ -14,6 +17,21 @@ const Main = () => {
           exact
           path="/"
           component={(props) => <BusinessPage {...props} />}
+        />
+
+        <Route
+          path="/pending"
+          component={(props) => <Pending {...props}/>}
+        />
+
+        <Route
+          path="/ongoing"
+          component={(props) => <Ongoing {...props}/>}
+        />
+
+        <Route
+          path="/done"
+          component={(props) => <Done {...props}/>}
         />
 
         <Route
