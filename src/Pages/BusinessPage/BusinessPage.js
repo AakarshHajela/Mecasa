@@ -32,7 +32,7 @@ const BusinessPage = ({ firebase, history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState("");
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [urlError, setUrlError] = useState("");
@@ -107,7 +107,7 @@ const BusinessPage = ({ firebase, history }) => {
   const handleChange = (e) => {
     if (e.target.files[0]) {
       var att = e.target.files[0];
-      setAttachment(att);
+      setAttachment(URL.createObjectURL(att));
     }
   };
   return (
