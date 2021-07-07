@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { withRouter } from "react-router-dom";
@@ -32,24 +32,34 @@ const BusinessPage = ({ firebase, history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
-  const [attachment, setAttachment] = useState("");
+  const [attachment, setAttachment] = useState(null);
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [urlError, setUrlError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [user, setUser] = useState(false);
+  
+  const userId = useRef("");
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
       if (!userAuth) {
         history.push("/login");
       } else {
+        userId.current = userAuth.uid;
+
         setUser(userAuth);
       }
     });
   }, []);
 
-  useEffect(() => {
+  {/*useEffect(()=>{
+    if(attachment){
+      console.log(attachment);
+    }
+  })*/}
+
+  const handleFormSubmit = async () => {
     if (
       email.length > 0 &&
       !new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}/g).test(email)
@@ -60,12 +70,6 @@ const BusinessPage = ({ firebase, history }) => {
       setEmailError("");
       setDisabled(false);
     }
-    return () => {
-      // cleanup
-    };
-  }, [email]);
-
-  const handleFormSubmit = async () => {
     if (!name) {
       setUrlError("");
       return setNameError("Name is Required");
@@ -80,23 +84,76 @@ const BusinessPage = ({ firebase, history }) => {
     }
 
     setIsFormSubmitting(true);
+
     let obj = {
       name,
       url,
       email,
-      attachment,
       status: 0,
+      id: user.uid,
     };
-    obj.timestamp = firebase.fromSecondsToTimestamp();
-    let res = await firebase.addBusinessForm(obj);
-    if (res) {
-      clearState();
-      setSuccessSnackBarOpen(true);
-    } else {
-      setSuccessSnackBarOpen(false);
+
+    let storageRef = firebase.storage.ref();
+    if(attachment)
+    {
+      let metaData = {
+        contentType : attachment.type
+      }
+      let uploadTask = storageRef
+        .child(`business/users/${userId.current}/attachments/${attachment.name}`)
+        .put(attachment, metaData);
+      
+        uploadTask.on('state_changed', 
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          // switch (snapshot.state) {
+          //   case firebase.storage.TaskState.PAUSED: // or 'paused'
+          //     console.log('Upload is paused');
+          //     break;
+          //   case firebase.storage.TaskState.RUNNING: // or 'running'
+          //     console.log('Upload is running');
+          //     break;
+          // }
+        }, 
+        (error) => {
+          // Handle unsuccessful uploads
+          console.log(error)
+        }, 
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          uploadTask.snapshot.ref.getDownloadURL().then( async (downloadURL) => {
+            // console.log('File available at', downloadURL);
+            obj.attachmentUrl = downloadURL;
+            obj.timestamp = firebase.fromSecondsToTimestamp();
+            let res = await firebase.addBusinessForm(obj);
+            if (res) {
+              clearState();
+              setSuccessSnackBarOpen(true);
+            } else {
+              setSuccessSnackBarOpen(false);
+            }
+            setIsFormSubmitting(false);
+          });
+        }
+      );     
     }
-    setIsFormSubmitting(false);
+    else{
+      obj.timestamp = firebase.fromSecondsToTimestamp();
+      let res = await firebase.addBusinessForm(obj);
+      if (res) {
+        clearState();
+        setSuccessSnackBarOpen(true);
+      } else {
+        setSuccessSnackBarOpen(false);
+      }
+      setIsFormSubmitting(false);
+    }    
   };
+  
   const clearState = () => {
     setName("");
     setEmail("");
@@ -106,13 +163,9 @@ const BusinessPage = ({ firebase, history }) => {
 
   const handleChange = (e) => {
     if (e.target.files[0]) {
-      var att = e.target.files[0];
-      setAttachment(URL.createObjectURL(att));
-    }
-  };
-
-  const handleUpload =() => {
-    
+      let att = e.target.files[0];
+      setAttachment(att);
+    } 
   };
 
   return (
@@ -199,7 +252,6 @@ const BusinessPage = ({ firebase, history }) => {
                         type="file"
                         onChange={handleChange}
                       />
-                      <Button variant='contained' color='primary'>Upload</Button>
 
                     </div>
 

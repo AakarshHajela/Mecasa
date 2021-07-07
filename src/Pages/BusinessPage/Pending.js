@@ -16,6 +16,7 @@ import { PopUpToast } from "../../components";
 import { Container, Row, Col } from "react-bootstrap";
 import Typography from "@material-ui/core/Typography";
 import ButtonsComponent from "./ButtonsComponent";
+import CustCard from "./CustCard";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -35,14 +36,13 @@ const Pending = ({ firebase, history }) => {
         history.push("/login");
       } else {
         setUser(userAuth);
+        firebase.getForms(0, userAuth.uid).then((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc) => doc.data());
+          setDetails(data);
+          console.log(data)
+        });
+        
       }
-    });
-  }, []);
-
-  useEffect(() => {
-    firebase.getForms(0).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setDetails(data);
     });
   }, []);
 
@@ -67,12 +67,7 @@ const Pending = ({ firebase, history }) => {
                       {details.map((detail) => {
                         return (
                           <>
-                            <div className="card" style={{ margin: 10 }}>
-                              <h5>
-                                {detail.name} {detail.email} {detail.url}
-                                {detail.attachment}
-                              </h5>
-                            </div>
+                            <CustCard name={detail.name} email={detail.email} url={detail.url} att={detail.attachment}/>
                           </>
                         );
                       })}

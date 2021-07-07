@@ -17,6 +17,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import ButtonsComponent from "./ButtonsComponent";
+import CustCard from "./CustCard";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -36,16 +37,14 @@ const Ongoing = ({ firebase, history }) => {
         history.push("/login");
       } else {
         setUser(userAuth);
+        firebase.getForms(1, userAuth.uid).then((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc) => doc.data());
+          setDetails(data);
+        });
       }
-    });
-  }, []);
-
-  useEffect(() => {
-    firebase.getForms(1).then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setDetails(data);
-    });
-  }, []);
+  }
+  )
+})
 
   return (
     user && (
@@ -68,12 +67,7 @@ const Ongoing = ({ firebase, history }) => {
                       {details.map((detail) => {
                         return (
                           <>
-                            <div className="card" style={{ margin: 10 }}>
-                              <h5>
-                                {detail.name} {detail.email} {detail.url}
-                                {detail.attachment}
-                              </h5>
-                            </div>
+                            <CustCard name={detail.name} email={detail.email} url={detail.url} att={detail.attachment}/>
                           </>
                         );
                       })}
