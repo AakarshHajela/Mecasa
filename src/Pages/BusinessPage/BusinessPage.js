@@ -110,6 +110,11 @@ const BusinessPage = ({ firebase, history }) => {
       setAttachment(URL.createObjectURL(att));
     }
   };
+
+  const handleUpload =() => {
+    
+  };
+
   return (
     user && (
       <>
@@ -190,10 +195,12 @@ const BusinessPage = ({ firebase, history }) => {
                     </Typography>
                     <div>
                       <Input
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: 10, marginRight: 10}}
                         type="file"
                         onChange={handleChange}
-                      ></Input>
+                      />
+                      <Button variant='contained' color='primary'>Upload</Button>
+
                     </div>
 
                     {isFormSubmitting ? (
