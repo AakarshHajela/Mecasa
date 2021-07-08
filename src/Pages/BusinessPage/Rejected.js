@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { withRouter } from "react-router-dom";
@@ -14,7 +14,6 @@ import {
 import "./BusinessPage.css";
 import { PopUpToast } from "../../components";
 import { Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import ButtonsComponent from "./ButtonsComponent";
 import CustCard from "./CustCard";
@@ -25,11 +24,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Done = ({ firebase, history }) => {
+const Rejected = ({ firebase, history }) => {
   const classes = useStyles();
   const [successSnackBarOpen, setSuccessSnackBarOpen] = useState(false);
-  const [user, setUser] = useState(false);
   const [details, setDetails] = useState([]);
+  const [user, setUser] = useState(false);
+
+  const userId = useRef("");
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
@@ -37,14 +38,36 @@ const Done = ({ firebase, history }) => {
         history.push("/login");
       } else {
         setUser(userAuth);
-        firebase.getForms(2, userAuth.uid).then((querySnapshot) => {
-          const data = querySnapshot.docs.map((doc) => doc.data());
+        userId.current = userAuth.uid;
+        firebase.getForms(-1, userAuth.uid).then((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc) => ({...doc.data(),docId:doc.id}));
           setDetails(data);
+          console.log(data)
         });
+        
       }
+    });
+  }, []);
+
+  const handleDelete = async (id,name) => {
+    let storageRef = firebase.storage.ref();
+    let fil = storageRef.child(`business/users/${userId.current}/attachments/${name}`)
+    fil.delete().then(() => {
+      console.log("File deleted successfully")
+    }).catch((error) => {
+      console.log("Uh-oh, an error occurred!")
+    });
+    await firebase.deleteBusinessForm(id);
+    let newDetail = [];
+    details.map((detail) => {
+      if (detail.docId !== id) {
+        newDetail.push(detail);
+      } else {
+        return;
+      }
+    });
+    setDetails(newDetail);
   }
-  )
-})
 
   return (
     user && (
@@ -61,22 +84,23 @@ const Done = ({ firebase, history }) => {
                 <div class="float-child">
                   <Paper elevation={10} className="form">
                     <Grid align="center">
-                      <h1>Finished Projects</h1>
+                      <h1>Rejected Requests</h1>
                     </Grid>
                     <div>
                       {details.map((detail) => {
                         return (
                           <>
                             <CustCard
-                            edit = {0}
+                            edit = {1}
                             docName = {detail.attName}
                             t={detail.docId}
                             timestamp ={detail.timestamp
                               .toDate()
                               .toString()
-                              .substr(0, 24)} 
+                              .substr(0, 24)}
                             url={detail.url} 
-                            att={detail.attachment}/>
+                            att={detail.attachmentUrl}
+                            handleDelete={handleDelete}/>
                           </>
                         );
                       })}
@@ -91,6 +115,6 @@ const Done = ({ firebase, history }) => {
     )
   );
 };
-const Component = withFirebase(Done);
+const Component = withFirebase(Rejected);
 
 export default withRouter(Component);

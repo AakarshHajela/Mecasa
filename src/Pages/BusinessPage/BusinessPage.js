@@ -18,6 +18,7 @@ import { PopUpToast } from "../../components";
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ButtonsComponent from "./ButtonsComponent";
+import { ProgressBar } from "react-bootstrap";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -32,7 +33,7 @@ const BusinessPage = ({ firebase, history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
-  const [attachment, setAttachment] = useState(null);
+  const [attachment, setAttachment] = useState("");
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [urlError, setUrlError] = useState("");
@@ -59,6 +60,7 @@ const BusinessPage = ({ firebase, history }) => {
     }
   })*/}
 
+  const [progress, setProgress] = useState(0);
   const handleFormSubmit = async () => {
     if (
       email.length > 0 &&
@@ -91,6 +93,7 @@ const BusinessPage = ({ firebase, history }) => {
       email,
       status: 0,
       id: user.uid,
+      attName:attachment.name,
     };
 
     let storageRef = firebase.storage.ref();
@@ -107,8 +110,9 @@ const BusinessPage = ({ firebase, history }) => {
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
+          let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progress)
+          // console.log('Upload is ' + progress + '% done');
           // switch (snapshot.state) {
           //   case firebase.storage.TaskState.PAUSED: // or 'paused'
           //     console.log('Upload is paused');
@@ -159,9 +163,11 @@ const BusinessPage = ({ firebase, history }) => {
     setEmail("");
     setUrl("");
     setAttachment("");
+    setProgress(0);
   };
 
   const handleChange = (e) => {
+    e.preventDefault();
     if (e.target.files[0]) {
       let att = e.target.files[0];
       setAttachment(att);
@@ -251,8 +257,9 @@ const BusinessPage = ({ firebase, history }) => {
                         style={{ marginLeft: 10, marginRight: 10}}
                         type="file"
                         onChange={handleChange}
+                        value={attachment.value}
                       />
-
+                      {progress>0 && <ProgressBar animated now={`${progress}`} label={`${progress}%`} srOnly/>}
                     </div>
 
                     {isFormSubmitting ? (
@@ -273,7 +280,6 @@ const BusinessPage = ({ firebase, history }) => {
                           type="submit"
                           variant="contained"
                           color="primary"
-                          disabled={disabled}
                           onClick={handleFormSubmit}
                         >
                           Submit

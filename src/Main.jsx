@@ -12,6 +12,8 @@ import {
   Done,
 } from "./Pages";
 
+import Rejected from "./Pages/BusinessPage/Rejected";
+
 const Main = () => {
   return (
     <BrowserRouter>
@@ -38,6 +40,12 @@ const Main = () => {
           path="/forgot-password"
           component={(props) => <ForgotPassword {...props} />}
         />
+
+        <Route
+          path="/rejected"
+          component={(props) => <Rejected {...props}/>}
+        />
+
         <Route component={Page404} />
       </Switch>
     </BrowserRouter>

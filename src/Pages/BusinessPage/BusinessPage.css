@@ -18,6 +18,7 @@
   margin: 10px 20px;
   width: 700px;
   height: 550px;
+  overflow-y: scroll;
 }
 
 .float-container {

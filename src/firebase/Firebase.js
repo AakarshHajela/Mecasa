@@ -131,8 +131,8 @@ class FireBase {
     return this.businessFormRef.doc(id).update(record);
   };
 
-  deleteBusinessForm = async (record) => {
-    return this.businessFormRef.doc(record.id).delete();
+  deleteBusinessForm = async (id) => {
+    return this.businessFormRef.doc(id).delete();
   };
 
   fromSecondsToTimestamp = (seconds, nanoseconds = 0) => {

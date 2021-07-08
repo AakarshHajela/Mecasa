@@ -67,7 +67,16 @@ const Ongoing = ({ firebase, history }) => {
                       {details.map((detail) => {
                         return (
                           <>
-                            <CustCard name={detail.name} email={detail.email} url={detail.url} att={detail.attachment}/>
+                            <CustCard 
+                            edit = {0}
+                            docName = {detail.attName}
+                            t={detail.docId}
+                             timestamp ={detail.timestamp
+                              .toDate()
+                              .toString()
+                              .substr(0, 24)}
+                             url={detail.url} 
+                             att={detail.attachment}/>
                           </>
                         );
                       })}

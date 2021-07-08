@@ -9,6 +9,7 @@ const ButtonsComponent = (number) => {
         <Button
           style={{ margin: 10, width: 100, height: 50 }}
           variant="contained"
+          color='primary'
         >
           Request
         </Button>
@@ -17,6 +18,7 @@ const ButtonsComponent = (number) => {
         <Button
           style={{ margin: 10, width: 100, height: 50 }}
           variant="contained"
+          color='primary'
         >
           Pending
         </Button>
@@ -25,16 +27,27 @@ const ButtonsComponent = (number) => {
         <Button
           style={{ margin: 10, width: 100, height: 50 }}
           variant="contained"
+          color='primary'
         >
           Ongoing
         </Button>
       </Link>
       <Link to="/done" style={{ textDecoration: "none" }}>
         <Button
-          style={{ margin: 10, width: 100, height: 50 }}
+          style={{ margin: 10, width: 100, height: 50, backgroundColor:'#00EA20' }}
           variant="contained"
+          color='primary'
         >
           Done
+        </Button>
+      </Link>
+      <Link to="/rejected" style={{ textDecoration: "none" }}>
+        <Button
+          style={{ margin: 10, width: 100, height: 50, backgroundColor:'#F51E19' }}
+          variant="contained"
+          color='primary'
+        >
+          Rejected
         </Button>
       </Link>
     </div>

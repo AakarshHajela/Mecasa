@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { withRouter } from "react-router-dom";
@@ -30,14 +30,17 @@ const Pending = ({ firebase, history }) => {
   const [details, setDetails] = useState([]);
   const [user, setUser] = useState(false);
 
+  const userId = useRef("");
+
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
       if (!userAuth) {
         history.push("/login");
       } else {
         setUser(userAuth);
+        userId.current = userAuth.uid;
         firebase.getForms(0, userAuth.uid).then((querySnapshot) => {
-          const data = querySnapshot.docs.map((doc) => doc.data());
+          const data = querySnapshot.docs.map((doc) => ({...doc.data(),docId:doc.id}));
           setDetails(data);
           console.log(data)
         });
@@ -45,6 +48,26 @@ const Pending = ({ firebase, history }) => {
       }
     });
   }, []);
+
+  const handleDelete = async (id,name) => {
+    let storageRef = firebase.storage.ref();
+    let fil = storageRef.child(`business/users/${userId.current}/attachments/${name}`)
+    fil.delete().then(() => {
+      console.log("File deleted successfully")
+    }).catch((error) => {
+      console.log("Uh-oh, an error occurred!")
+    });
+    await firebase.deleteBusinessForm(id);
+    let newDetail = [];
+    details.map((detail) => {
+      if (detail.docId !== id) {
+        newDetail.push(detail);
+      } else {
+        return;
+      }
+    });
+    setDetails(newDetail);
+  }
 
   return (
     user && (
@@ -67,7 +90,17 @@ const Pending = ({ firebase, history }) => {
                       {details.map((detail) => {
                         return (
                           <>
-                            <CustCard name={detail.name} email={detail.email} url={detail.url} att={detail.attachment}/>
+                            <CustCard
+                            edit = {1}
+                            docName = {detail.attName}
+                            t={detail.docId}
+                            timestamp ={detail.timestamp
+                              .toDate()
+                              .toString()
+                              .substr(0, 24)}
+                            url={detail.url} 
+                            att={detail.attachmentUrl}
+                            handleDelete={handleDelete}/>
                           </>
                         );
                       })}

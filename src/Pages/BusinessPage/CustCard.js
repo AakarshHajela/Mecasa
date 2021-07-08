@@ -9,6 +9,11 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { TextField } from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
+import { Button } from '@material-ui/core';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,9 +31,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustCard({name, email, url, att}) {
+export default function CustCard({edit, docName, t, timestamp, url, att, handleDelete}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -36,12 +51,38 @@ export default function CustCard({name, email, url, att}) {
 
   return (
     <Card style={{margin:10}} className={classes.root}>  
-      <CardContent  disableSpacing>
+      <CardContent >
         <Typography variant="body2" style={{fontSize:24}} color='textPrimary' component="p">
-          Name: {name} Email: {email}
+        <img style={{width:'40px', height:'40px', marginRight:5}} src={'https://www.maxpixel.net/static/photo/1x/Time-Of-Clock-Time-Indicating-Time-Icon-1606153.png'}></img>
+          {timestamp}
+           <IconButton style={{float:'right'}} onClick={()=>{handleDelete(t,docName)}}>
+             <Delete/>
+           </IconButton>
+           {edit > 0 && <><Button style={{float:'right', marginRight:10}} variant='contained' aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                          Options<ExpandMoreIcon/>
+                        </Button>
+                        <Menu
+                          id="simple-menu"
+                          anchorEl={anchorEl}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={handleClose}
+                        >
+                          <MenuItem onClick={handleClose}>Edit</MenuItem>
+                          <MenuItem onClick={handleClose}>Resubmit</MenuItem>
+                        </Menu></>}
         </Typography>
+        </CardContent>
         <IconButton
-            style={{float:'right'}}
+            style={{float:'right', marginRight:15}}
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
           })}
@@ -50,11 +91,11 @@ export default function CustCard({name, email, url, att}) {
           aria-label="show more"
         >
           <ExpandMoreIcon />
-        </IconButton>
-        </CardContent>
+        </IconButton> 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography>Url(s): {url}<br></br><br></br> Attachment: {att}</Typography>
+          <Typography>Url(s): {url}</Typography>
+          <Typography> Attachment: {docName}</Typography>
         </CardContent>
       </Collapse>
     </Card>
