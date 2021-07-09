@@ -29,7 +29,6 @@ const Pending = ({ firebase, history }) => {
   const [successSnackBarOpen, setSuccessSnackBarOpen] = useState(false);
   const [details, setDetails] = useState([]);
   const [user, setUser] = useState(false);
-
   const userId = useRef("");
 
   useEffect(() => {
@@ -92,15 +91,14 @@ const Pending = ({ firebase, history }) => {
                           <>
                             <CustCard
                             edit = {1}
-                            docName = {detail.attName}
-                            t={detail.docId}
+                            det = {detail}
+                            
                             timestamp ={detail.timestamp
                               .toDate()
                               .toString()
                               .substr(0, 24)}
-                            url={detail.url} 
-                            att={detail.attachmentUrl}
-                            handleDelete={handleDelete}/>
+                            handleDelete={handleDelete}
+                            />
                           </>
                         );
                       })}

@@ -14,6 +14,7 @@ import { Delete } from '@material-ui/icons';
 import { Button } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Edit from './Edit';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,13 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustCard({edit, docName, t, timestamp, url, att, handleDelete}) {
+export default function CustCard({edit, det, timestamp, handleDelete}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-
+  const [showDialog, setShowDialog] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
+    console.log(det.docId)
     setAnchorEl(event.currentTarget);
   };
 
@@ -50,12 +52,14 @@ export default function CustCard({edit, docName, t, timestamp, url, att, handleD
   };
 
   return (
+    <>
+    <Edit det={det} showDialog={showDialog} setShowDialog={setShowDialog}/>
     <Card style={{margin:10}} className={classes.root}>  
       <CardContent >
         <Typography variant="body2" style={{fontSize:24}} color='textPrimary' component="p">
         <img style={{width:'40px', height:'40px', marginRight:5}} src={'https://www.maxpixel.net/static/photo/1x/Time-Of-Clock-Time-Indicating-Time-Icon-1606153.png'}></img>
           {timestamp}
-           <IconButton style={{float:'right'}} onClick={()=>{handleDelete(t,docName)}}>
+           <IconButton style={{float:'right'}} onClick={()=>{handleDelete(det.docId,det.docName)}}>
              <Delete/>
            </IconButton>
            {edit > 0 && <><Button style={{float:'right', marginRight:10}} variant='contained' aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
@@ -76,7 +80,7 @@ export default function CustCard({edit, docName, t, timestamp, url, att, handleD
                           open={Boolean(anchorEl)}
                           onClose={handleClose}
                         >
-                          <MenuItem onClick={handleClose}>Edit</MenuItem>
+                          <MenuItem onClick={()=>setShowDialog(true)}>Edit</MenuItem>
                           <MenuItem onClick={handleClose}>Resubmit</MenuItem>
                         </Menu></>}
         </Typography>
@@ -94,10 +98,11 @@ export default function CustCard({edit, docName, t, timestamp, url, att, handleD
         </IconButton> 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography>Url(s): {url}</Typography>
-          <Typography> Attachment: {docName}</Typography>
+          <Typography>Url(s): {det.url}</Typography>
+          <Typography> Attachment: {det.docName}</Typography>
         </CardContent>
       </Collapse>
     </Card>
+    </>
   );
 }

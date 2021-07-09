@@ -19,30 +19,32 @@ import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ButtonsComponent from "./ButtonsComponent";
 import { ProgressBar } from "react-bootstrap";
-
+import Dialog from "@material-ui/core/Dialog";
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
     marginTop: theme.spacing(4),
   },
 }));
 
-const BusinessPage = ({ firebase, history }) => {
+const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
   const classes = useStyles();
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [successSnackBarOpen, setSuccessSnackBarOpen] = useState(false);
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(det.url);
   const [attachment, setAttachment] = useState("");
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
   const [urlError, setUrlError] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [user, setUser] = useState(false);
-  const [subject, setSubject] = useState("");
-  const [desc, setDesc] = useState("");
+  const [subject, setSubject] = useState(det.subject);
+  const [desc, setDesc] = useState(det.desc);
   
   const userId = useRef("");
 
-  console.log(user)
+  const handleClose = () => {
+    setShowDialog(false);
+  };
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
@@ -50,12 +52,8 @@ const BusinessPage = ({ firebase, history }) => {
         history.push("/login");
       } else {
         userId.current = userAuth.uid;
-        let userDetails = await firebase.getUserProfileDetails(userAuth.uid)
-        const data = userDetails.data();
-        if(data){
-          setUser({...userAuth, name:data.fName+" "+data.lName, email:data.email});
-        }
-        
+
+        setUser(userAuth);
       }
     });
   }, []);
@@ -83,23 +81,18 @@ const BusinessPage = ({ firebase, history }) => {
 
     setIsFormSubmitting(true);
 
-    
 
     let obj = {
-      name:user.name,
-      subject, 
+      subject,
       desc,
       url,
-      email:user.email,
-      status: 0,
-      id: user.uid,
       
     };
 
     let storageRef = firebase.storage.ref();
     if(attachment)
     {
-      obj.attName=attachment.name;
+        obj.attName=attachment.name;
       let metaData = {
         contentType : attachment.type
       }
@@ -134,9 +127,9 @@ const BusinessPage = ({ firebase, history }) => {
             // console.log('File available at', downloadURL);
             obj.attachmentUrl = downloadURL;
             obj.timestamp = firebase.fromSecondsToTimestamp();
-            let res = await firebase.addBusinessForm(obj);
+            let res = await firebase.updateBusinessForm(det.docId, obj);
             if (res) {
-              clearState();
+              handleClose();
               setSuccessSnackBarOpen(true);
             } else {
               setSuccessSnackBarOpen(false);
@@ -148,13 +141,11 @@ const BusinessPage = ({ firebase, history }) => {
     }
     else{
       obj.timestamp = firebase.fromSecondsToTimestamp();
-      let res = await firebase.addBusinessForm(obj);
-      if (res) {
-        clearState();
+      
+      let res = await firebase.updateBusinessForm(det.docId, obj);
+      
+        handleClose();
         setSuccessSnackBarOpen(true);
-      } else {
-        setSuccessSnackBarOpen(false);
-      }
       setIsFormSubmitting(false);
     }    
   };
@@ -178,6 +169,11 @@ const BusinessPage = ({ firebase, history }) => {
   return (
     user && (
       <>
+      <Dialog
+        open={showDialog}
+        keepMounted
+        onClose={handleClose}
+        >
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
@@ -294,18 +290,19 @@ const BusinessPage = ({ firebase, history }) => {
             </div>
           </Grid>
         </Grid>
+        </Dialog>
         <PopUpToast
           successSnackBarOpen={successSnackBarOpen}
           setSuccessSnackBarOpen={setSuccessSnackBarOpen}
           vertical="top"
           horizontal="center"
           severity="success"
-          message="Form Submitted Succesfully"
+          message="Details Updated Succesfully"
         />
       </>
     )
   );
 };
-const Component = withFirebase(BusinessPage);
+const Component = withFirebase(Edit);
 
 export default withRouter(Component);
