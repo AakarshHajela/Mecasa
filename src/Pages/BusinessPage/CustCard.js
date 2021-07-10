@@ -10,11 +10,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { TextField } from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
+import { Delete,Edit } from '@material-ui/icons';
 import { Button } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Edit from './Edit';
+import EditDialog from './Edit';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustCard({edit, det, timestamp, handleDelete}) {
+export default function CustCard({edit, resubmit, det, timestamp, handleDelete, handleResubmit}) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
@@ -53,15 +54,12 @@ export default function CustCard({edit, det, timestamp, handleDelete}) {
 
   return (
     <>
-    <Edit det={det} showDialog={showDialog} setShowDialog={setShowDialog}/>
+    <EditDialog det={det} showDialog={showDialog} setShowDialog={setShowDialog}/>
     <Card style={{margin:10}} className={classes.root}>  
       <CardContent >
         <Typography variant="body2" style={{fontSize:24}} color='textPrimary' component="p">
         <img style={{width:'40px', height:'40px', marginRight:5}} src={'https://www.maxpixel.net/static/photo/1x/Time-Of-Clock-Time-Indicating-Time-Icon-1606153.png'}></img>
           {timestamp}
-           <IconButton style={{float:'right'}} onClick={()=>{handleDelete(det.docId,det.docName)}}>
-             <Delete/>
-           </IconButton>
            {edit > 0 && <><Button style={{float:'right', marginRight:10}} variant='contained' aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                           Options<ExpandMoreIcon/>
                         </Button>
@@ -80,8 +78,9 @@ export default function CustCard({edit, det, timestamp, handleDelete}) {
                           open={Boolean(anchorEl)}
                           onClose={handleClose}
                         >
-                          <MenuItem onClick={()=>setShowDialog(true)}>Edit</MenuItem>
-                          <MenuItem onClick={handleClose}>Resubmit</MenuItem>
+                          <MenuItem onClick={() => {handleClose();setShowDialog(true)}}><Edit/>Edit</MenuItem>
+                          <MenuItem onClick={()=>{handleDelete(det.docId,det.docName)}}><Delete/>Delete</MenuItem>
+                          {resubmit > 0 && <MenuItem onClick={() => {handleClose();handleResubmit(det.docId)}}>Resubmit</MenuItem>}
                         </Menu></>}
         </Typography>
         </CardContent>
@@ -98,8 +97,10 @@ export default function CustCard({edit, det, timestamp, handleDelete}) {
         </IconButton> 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
+          <Typography>Subject: {det.subject}</Typography>
+          <Typography>Description: {det.desc}</Typography>
           <Typography>Url(s): {det.url}</Typography>
-          <Typography> Attachment: {det.docName}</Typography>
+          <Typography> Attachment: {det.attName}</Typography>
         </CardContent>
       </Collapse>
     </Card>

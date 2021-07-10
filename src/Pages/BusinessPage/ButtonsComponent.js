@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const ButtonsComponent = (number) => {
   return (
+    <>
     <div style={{ marginTop: 20 }}>
       <Link to="/" style={{ textDecoration: "none" }}>
         <Button
@@ -14,6 +15,8 @@ const ButtonsComponent = (number) => {
           Request
         </Button>
       </Link>
+      </div>
+      <div>
       <Link to="/pending" style={{ textDecoration: "none" }}>
         <Button
           style={{ margin: 10, width: 100, height: 50 }}
@@ -23,6 +26,8 @@ const ButtonsComponent = (number) => {
           Pending
         </Button>
       </Link>
+      </div>
+      <div>
       <Link to="/ongoing" style={{ textDecoration: "none" }}>
         <Button
           style={{ margin: 10, width: 100, height: 50 }}
@@ -32,6 +37,8 @@ const ButtonsComponent = (number) => {
           Ongoing
         </Button>
       </Link>
+      </div>
+      <div>
       <Link to="/done" style={{ textDecoration: "none" }}>
         <Button
           style={{ margin: 10, width: 100, height: 50, backgroundColor:'#00EA20' }}
@@ -41,6 +48,8 @@ const ButtonsComponent = (number) => {
           Done
         </Button>
       </Link>
+      </div>
+      <div>
       <Link to="/rejected" style={{ textDecoration: "none" }}>
         <Button
           style={{ margin: 10, width: 100, height: 50, backgroundColor:'#F51E19' }}
@@ -51,6 +60,7 @@ const ButtonsComponent = (number) => {
         </Button>
       </Link>
     </div>
+    </>
   );
 };
 

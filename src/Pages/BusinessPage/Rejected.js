@@ -17,6 +17,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import Typography from "@material-ui/core/Typography";
 import ButtonsComponent from "./ButtonsComponent";
 import CustCard from "./CustCard";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -69,9 +71,23 @@ const Rejected = ({ firebase, history }) => {
     setDetails(newDetail);
   }
 
+  const handleResubmit = async(id) => {
+    await firebase.updateBusinessForm(id, { status: 0, timestamp : firebase.fromSecondsToTimestamp()});
+    let newDetail = [];
+    details.map((detail) => {
+      if (detail.docId !== id) {
+        newDetail.push(detail);
+      } else {
+        return;
+      }
+    });
+    setDetails(newDetail);
+  }
+
   return (
     user && (
       <>
+      <Navbar firebase={firebase}/>
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
@@ -82,7 +98,6 @@ const Rejected = ({ firebase, history }) => {
               </div>
               <Container>
                 <div class="float-child">
-                  <Paper elevation={10} className="form">
                     <Grid align="center">
                       <h1>Rejected Requests</h1>
                     </Grid>
@@ -92,25 +107,24 @@ const Rejected = ({ firebase, history }) => {
                           <>
                             <CustCard
                             edit = {1}
-                            docName = {detail.attName}
-                            t={detail.docId}
+                            resubmit = {1}
+                            det = {detail}
                             timestamp ={detail.timestamp
                               .toDate()
                               .toString()
                               .substr(0, 24)}
-                            url={detail.url} 
-                            att={detail.attachmentUrl}
-                            handleDelete={handleDelete}/>
+                            handleDelete={handleDelete}
+                            handleResubmit={handleResubmit}/>
                           </>
                         );
                       })}
                     </div>
-                  </Paper>
                 </div>
               </Container>
             </div>
           </Grid>
         </Grid>
+        <Footer/>
       </>
     )
   );

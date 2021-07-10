@@ -19,6 +19,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ButtonsComponent from "./ButtonsComponent";
 import { ProgressBar } from "react-bootstrap";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -178,6 +180,7 @@ const BusinessPage = ({ firebase, history }) => {
   return (
     user && (
       <>
+      <Navbar firebase={firebase}/>
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
@@ -188,7 +191,6 @@ const BusinessPage = ({ firebase, history }) => {
               </div>
               <Container>
                 <div class="float-child">
-                  <Paper elevation={10} className="form">
                     <Grid align="center">
                       <h1>Contact Us</h1>
                     </Grid>
@@ -288,7 +290,6 @@ const BusinessPage = ({ firebase, history }) => {
                         </Button>
                       </FormControl>
                     )}
-                  </Paper>
                 </div>
               </Container>
             </div>
@@ -302,6 +303,7 @@ const BusinessPage = ({ firebase, history }) => {
           severity="success"
           message="Form Submitted Succesfully"
         />
+        <Footer/>
       </>
     )
   );

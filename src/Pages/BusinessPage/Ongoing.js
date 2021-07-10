@@ -18,6 +18,8 @@ import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import ButtonsComponent from "./ButtonsComponent";
 import CustCard from "./CustCard";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -49,6 +51,7 @@ const Ongoing = ({ firebase, history }) => {
   return (
     user && (
       <>
+      <Navbar firebase={firebase}/>
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
@@ -59,7 +62,6 @@ const Ongoing = ({ firebase, history }) => {
               </div>
               <Container>
                 <div class="float-child">
-                  <Paper elevation={10} className="form">
                     <Grid align="center">
                       <h1>Ongoing Projects</h1>
                     </Grid>
@@ -67,6 +69,7 @@ const Ongoing = ({ firebase, history }) => {
                       {details.map((detail) => {
                         return (
                           <>
+                            
                             <CustCard 
                             edit = {0}
                             docName = {detail.attName}
@@ -81,12 +84,12 @@ const Ongoing = ({ firebase, history }) => {
                         );
                       })}
                     </div>
-                  </Paper>
                 </div>
               </Container>
             </div>
           </Grid>
         </Grid>
+        <Footer/>
       </>
     )
   );

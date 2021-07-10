@@ -4,7 +4,8 @@
 }
 .BusinessPage {
   height: 100vh;
-  background-color: rgb(188, 209, 209);
+  background-color: rgb(255, 255, 255);
+
 }
 .BusinessPage >.form-container {
   display: flex;
@@ -16,13 +17,11 @@
 .form {
   padding: 10px;
   margin: 10px 20px;
-  width: 700px;
-  height: 550px;
-  overflow-y: scroll;
+  width: 800px;
+  height: 600px;
 }
 
 .float-container {
-  border: 3px solid #fff;
   padding: 10px;
   width: 1000px;
   height: 630px;

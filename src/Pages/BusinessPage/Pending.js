@@ -17,6 +17,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import Typography from "@material-ui/core/Typography";
 import ButtonsComponent from "./ButtonsComponent";
 import CustCard from "./CustCard";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const useStyles = makeStyles((theme) => ({
   withoutLabel: {
@@ -71,6 +73,7 @@ const Pending = ({ firebase, history }) => {
   return (
     user && (
       <>
+      <Navbar firebase={firebase}/>
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
@@ -81,7 +84,6 @@ const Pending = ({ firebase, history }) => {
               </div>
               <Container>
                 <div class="float-child">
-                  <Paper elevation={10} className="form">
                     <Grid align="center">
                       <h1>Pending Requests</h1>
                     </Grid>
@@ -91,8 +93,8 @@ const Pending = ({ firebase, history }) => {
                           <>
                             <CustCard
                             edit = {1}
-                            det = {detail}
-                            
+                            resubmit = {0}
+                            det = {detail}                            
                             timestamp ={detail.timestamp
                               .toDate()
                               .toString()
@@ -103,12 +105,12 @@ const Pending = ({ firebase, history }) => {
                         );
                       })}
                     </div>
-                  </Paper>
                 </div>
               </Container>
             </div>
           </Grid>
         </Grid>
+        <Footer/>
       </>
     )
   );

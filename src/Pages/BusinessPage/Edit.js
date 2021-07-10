@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
+const EditDialog = ({ firebase, history, det, showDialog, setShowDialog}) => {
   const classes = useStyles();
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [successSnackBarOpen, setSuccessSnackBarOpen] = useState(false);
@@ -41,6 +41,8 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
   const [desc, setDesc] = useState(det.desc);
   
   const userId = useRef("");
+
+  const attRef = det.attName;
 
   const handleClose = () => {
     setShowDialog(false);
@@ -96,6 +98,12 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
       let metaData = {
         contentType : attachment.type
       }
+      let fil = storageRef.child(`business/users/${userId.current}/attachments/${attRef}`)
+      fil.delete().then(() => {
+        console.log("File deleted successfully")
+      }).catch((error) => {
+        console.log("Uh-oh, an error occurred!")
+      });
       let uploadTask = storageRef
         .child(`business/users/${userId.current}/attachments/${attachment.name}`)
         .put(attachment, metaData);
@@ -128,12 +136,9 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
             obj.attachmentUrl = downloadURL;
             obj.timestamp = firebase.fromSecondsToTimestamp();
             let res = await firebase.updateBusinessForm(det.docId, obj);
-            if (res) {
-              handleClose();
-              setSuccessSnackBarOpen(true);
-            } else {
-              setSuccessSnackBarOpen(false);
-            }
+            clearState();
+            handleClose();
+            setSuccessSnackBarOpen(true);
             setIsFormSubmitting(false);
           });
         }
@@ -143,7 +148,7 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
       obj.timestamp = firebase.fromSecondsToTimestamp();
       
       let res = await firebase.updateBusinessForm(det.docId, obj);
-      
+      clearState();
         handleClose();
         setSuccessSnackBarOpen(true);
       setIsFormSubmitting(false);
@@ -151,10 +156,6 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
   };
   
   const clearState = () => {
-    setSubject("");
-    setDesc("");
-    setUrl("");
-    setAttachment("");
     setProgress(0);
   };
 
@@ -174,19 +175,12 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
         keepMounted
         onClose={handleClose}
         >
-        <Grid className="BusinessPage">
-          <Grid className="form-container">
-            <div class="float-container">
-              <div class="float-child-button">
-                <Container>
-                  <ButtonsComponent />
-                </Container>
-              </div>
+          <Grid>
+            <div>
               <Container>
-                <div class="float-child">
-                  <Paper elevation={10} className="form">
+                <div>
                     <Grid align="center">
-                      <h1>Contact Us</h1>
+                      <h1>Edit Your Request</h1>
                     </Grid>
                     <FormControl
                       className={clsx(classes.withoutLabel)}
@@ -284,12 +278,10 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
                         </Button>
                       </FormControl>
                     )}
-                  </Paper>
                 </div>
               </Container>
             </div>
           </Grid>
-        </Grid>
         </Dialog>
         <PopUpToast
           successSnackBarOpen={successSnackBarOpen}
@@ -303,6 +295,6 @@ const Edit = ({ firebase, history, det, showDialog, setShowDialog}) => {
     )
   );
 };
-const Component = withFirebase(Edit);
+const Component = withFirebase(EditDialog);
 
 export default withRouter(Component);
