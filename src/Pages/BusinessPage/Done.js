@@ -55,12 +55,9 @@ const Done = ({ firebase, history }) => {
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
-              <div class="float-child-button">
-                <Container>
-                  <ButtonsComponent />
-                </Container>
-              </div>
               <Container>
+              <div class="float-child-button">
+              </div>
                 <div class="float-child">
                     <Grid align="center">
                       <h1>Finished Projects</h1>

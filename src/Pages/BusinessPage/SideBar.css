@@ -1,6 +1,6 @@
 .side-bar{
     left:0;
-    position:relative;
+    position:sticky;
     width: 200;
     height: 100%;
   }

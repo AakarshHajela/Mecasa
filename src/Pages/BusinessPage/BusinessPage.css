@@ -14,33 +14,13 @@
   justify-content: center;
   height: 100%;
 }
-.form {
-  padding: 10px;
-  margin: 10px 20px;
-  width: 800px;
-  height: 600px;
-}
 
 .float-container {
   padding: 10px;
-  width: 1000px;
+  width: 100%;
   height: 630px;
 }
 
-.float-child-button {
-  width: 20%;
-  float: left;
-  padding: 20px;
-}
-
 .float-child {
-  width: 80%;
-  float: left;
   padding: 20px;
 }  
-
-.card {
-  cursor: pointer;
-  background-color: #ffffff;
-  border-radius: 6px;
-}

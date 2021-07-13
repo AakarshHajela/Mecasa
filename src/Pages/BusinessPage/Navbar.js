@@ -11,6 +11,8 @@ import { Avatar, Button, IconButton } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import Menu from "@material-ui/icons/Menu";
 import SideBar from "./SideBar";
+import Call from "@material-ui/icons/Call"
+import HelpDialog from "./HelpDialog";
 
 const useStyles = makeStyles((theme) => ({
     cancelBtn: {
@@ -27,14 +29,13 @@ const useStyles = makeStyles((theme) => ({
   const Navbar = ({ firebase}) => {
     let history = useHistory();
 
-    const [showBar, setShowBar] = useState(false);
+    const [showDialog, setShowDialog] = useState(false);
 
     return (
       <>
-      <SideBar showBar={showBar} setShowBar={setShowBar}/>
+      <HelpDialog open={showDialog} setOpen={setShowDialog}/>
         <div className="navbar-container">
           <div className="left-container">
-            {/* <div><Button onClick={()=>setShowBar(true)}><Menu/></Button></div> */}
             <div>
               <img src={`${process.env.PUBLIC_URL}/explified.svg`} alt="logo" />
             </div>
@@ -45,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
             </div>
           </div>
           <div className="right-container">
-            <HelpIcon fontSize="large" />
-            <NotificationsIcon fontSize="large" />
+          <Button style={{margin:10, borderRadius:0}} variant='outlined' className='call-button'><Call style={{margin:5}}/>Schedule a Call</Button>
+            <IconButton style={{marginRight:10}} onClick={()=>setShowDialog(true)}><HelpIcon fontSize="large" /></IconButton>
             <div id="avatar">
               <Avatar />
               <KeyboardArrowDownIcon />

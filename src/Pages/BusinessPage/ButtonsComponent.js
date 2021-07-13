@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const ButtonsComponent = (number) => {
   return (
     <>
-    <div style={{ marginTop: 20 }}>
+    <div style={{ marginTop: 60 }}>
       <Link to="/" style={{ textDecoration: "none" }}>
         <Button
           style={{ margin: 10, width: 100, height: 50 }}

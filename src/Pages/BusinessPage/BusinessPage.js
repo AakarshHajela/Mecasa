@@ -3,22 +3,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { withRouter } from "react-router-dom";
 import { withFirebase } from "../../firebase";
-import Input from "@material-ui/core/Input";
-import Typography from "@material-ui/core/Typography";
 import {
   TextField,
   Grid,
   FormControl,
-  Paper,
   Button,
   CircularProgress,
 } from "@material-ui/core/";
 import "./BusinessPage.css";
 import { PopUpToast } from "../../components";
-import { Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import ButtonsComponent from "./ButtonsComponent";
-import { ProgressBar } from "react-bootstrap";
+import { Container} from "react-bootstrap";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -32,123 +26,49 @@ const BusinessPage = ({ firebase, history }) => {
   const classes = useStyles();
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [successSnackBarOpen, setSuccessSnackBarOpen] = useState(false);
-  const [url, setUrl] = useState("");
-  const [attachment, setAttachment] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [urlError, setUrlError] = useState("");
-  const [disabled, setDisabled] = useState(false);
+  const [messageError, setMessageError] = useState("");
   const [user, setUser] = useState(false);
-  const [subject, setSubject] = useState("");
-  const [desc, setDesc] = useState("");
+  const [message, setMessage] = useState("");
+  const [dmenu, setDmenu] = useState("");
   
   const userId = useRef("");
-
+  
   console.log(user)
 
   useEffect(() => {
     firebase.auth.onAuthStateChanged(async (userAuth) => {
-      if (!userAuth) {
-        history.push("/login");
-      } else {
+      if(userAuth){
         userId.current = userAuth.uid;
         let userDetails = await firebase.getUserProfileDetails(userAuth.uid)
         const data = userDetails.data();
+        console.log(data);
         if(data){
-          setUser({...userAuth, name:data.fName+" "+data.lName, email:data.email});
+          setUser({...userAuth, name:data.fName+" "+data.lName, email:data.email, phone:data.phone});}
         }
-        
+      else{
+        history.push("/login");
       }
     });
   }, []);
 
-  {/*useEffect(()=>{
-    if(attachment){
-      console.log(attachment);
-    }
-  })*/}
-
-  const [progress, setProgress] = useState(0);
   const handleFormSubmit = async () => {
-    if (!subject) {
-      setUrlError("");
-      return setNameError("Name is Required");
-    } else {
-      setNameError("");
-    }
-    if (!url) {
-      return setUrlError("Url(s) is Required");
-    } else {
-      setNameError("");
-      setUrlError("");
+
+    if(!message){
+      return setMessageError("Enter something");
+    }else{
+      setMessageError("");
     }
 
     setIsFormSubmitting(true);
 
-    
-
     let obj = {
       name:user.name,
-      subject, 
-      desc,
-      url,
       email:user.email,
-      status: 0,
-      id: user.uid,
-      
+      phone:user.phone,
+      info:dmenu,
+      message,      
+      status:0,
     };
-
-    let storageRef = firebase.storage.ref();
-    if(attachment)
-    {
-      obj.attName=attachment.name;
-      let metaData = {
-        contentType : attachment.type
-      }
-      let uploadTask = storageRef
-        .child(`business/users/${userId.current}/attachments/${attachment.name}`)
-        .put(attachment, metaData);
-      
-        uploadTask.on('state_changed', 
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress(progress)
-          // console.log('Upload is ' + progress + '% done');
-          // switch (snapshot.state) {
-          //   case firebase.storage.TaskState.PAUSED: // or 'paused'
-          //     console.log('Upload is paused');
-          //     break;
-          //   case firebase.storage.TaskState.RUNNING: // or 'running'
-          //     console.log('Upload is running');
-          //     break;
-          // }
-        }, 
-        (error) => {
-          // Handle unsuccessful uploads
-          console.log(error)
-        }, 
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          uploadTask.snapshot.ref.getDownloadURL().then( async (downloadURL) => {
-            // console.log('File available at', downloadURL);
-            obj.attachmentUrl = downloadURL;
-            obj.timestamp = firebase.fromSecondsToTimestamp();
-            let res = await firebase.addBusinessForm(obj);
-            if (res) {
-              clearState();
-              setSuccessSnackBarOpen(true);
-            } else {
-              setSuccessSnackBarOpen(false);
-            }
-            setIsFormSubmitting(false);
-          });
-        }
-      );     
-    }
-    else{
       obj.timestamp = firebase.fromSecondsToTimestamp();
       let res = await firebase.addBusinessForm(obj);
       if (res) {
@@ -157,115 +77,105 @@ const BusinessPage = ({ firebase, history }) => {
       } else {
         setSuccessSnackBarOpen(false);
       }
-      setIsFormSubmitting(false);
-    }    
+      setIsFormSubmitting(false);   
   };
   
   const clearState = () => {
-    setSubject("");
-    setDesc("");
-    setUrl("");
-    setAttachment("");
-    setProgress(0);
+    setDmenu("");
+    setMessage("");
   };
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    if (e.target.files[0]) {
-      let att = e.target.files[0];
-      setAttachment(att);
-    } 
-  };
+  const handleDropdown = (e) => {
+      setDmenu(e.target.value);
+  }
 
   return (
-    user && (
-      <>
+      user && (<>
       <Navbar firebase={firebase}/>
         <Grid className="BusinessPage">
           <Grid className="form-container">
             <div class="float-container">
-              <div class="float-child-button">
-                <Container>
-                  <ButtonsComponent />
-                </Container>
-              </div>
-              <Container>
+            <img style={{width:670, height:500, marginTop:30}} src="https://p1.pxfuel.com/preview/210/23/628/contact-visit-letters-email.jpg"></img>
+              <Container style={{width:640, float:'right', marginTop:40, marginRight:30}}>
                 <div class="float-child">
-                    <Grid align="center">
-                      <h1>Contact Us</h1>
+                  <Grid align="center">
+                      <h3>Fill out this form to get in touch with us</h3>
                     </Grid>
+                    
+                    <div style={{display:'inline-flex'}}>
                     <FormControl
                       className={clsx(classes.withoutLabel)}
-                      fullWidth
                     >
                       <TextField
-                        style={{ marginRight: 10, marginLeft: 10 }}
-                        error={nameError.length > 0}
-                        helperText={nameError}
-                        autoFocus
-                        id="subject"
-                        label="Enter Subject"
+                        style={{ marginRight: 10, marginLeft: 10, width:245}}
+                        disabled
                         type="text"
                         variant="outlined"
-                        placeholder="Enter Subject"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        required
+                        value={user.name}
                       />
                     </FormControl>
                     <FormControl
                       className={clsx(classes.withoutLabel)}
-                      fullWidth
                     >
                       <TextField
-                        style={{ marginRight: 10, marginLeft: 10 }}
-                        error={emailError.length > 0}
-                        helperText={emailError}
-                        id="Description"
-                        label="Enter Description"
+                        style={{ marginRight: 10, marginLeft: 10, width:280}}
+                        disabled
                         type="text"
                         variant="outlined"
-                        placeholder="Enter Description"
-                        value={desc}
-                        multiline
-                        onChange={(e) => setDesc(e.target.value)}
-                        required
+                        value={user.email}
                       />
                     </FormControl>
+                    </div>
+                    <div style={{display:'inline-flex'}}>
+                    <FormControl
+                      className={clsx(classes.withoutLabel)}
+                      
+                    >
+                    <TextField
+                        style={{ marginRight: 10, marginLeft: 10, width:245}}
+                        disabled
+                        type="text"
+                        variant="outlined"
+                        value={user.phone}
+                    />
+                    </FormControl>
+                    <FormControl
+                      className={clsx(classes.withoutLabel)}
+                    >
+                    <div style={{ marginRight: 10, marginLeft: 10, width:280}}>
+                    <select style={{height:55, width:280}} value={dmenu} onChange={handleDropdown}>
+                      <option value="How did you hear about Explified?">How did you hear about Explified?</option>
+                      <option value="Friends or Business Referral">Friends or Business Referral</option>
+                      <option value="Google">Google</option>
+                      <option value="Youtube">Youtube</option>
+                      <option value="Instagram">Instagram</option>
+                      <option value="Facebook">Facebook</option>
+                      <option value="Linkdin">Linkdin</option>
+                      <option value="Others">Others</option>
+                    </select> 
+                    </div>
+                    </FormControl>
+                    </div>                  
                     <FormControl
                       className={clsx(classes.withoutLabel)}
                       fullWidth
                     >
+                    
                       <TextField
                         style={{ marginRight: 10, marginLeft: 10 }}
-                        error={urlError.length > 0}
-                        helperText={urlError}
-                        id="url"
-                        label="URL of Videos"
+                        id="message"
+                        error={messageError.length > 0}
+                        helperText={messageError}
+                        label="Message"
                         multiline
                         rows={3}
                         variant="outlined"
-                        placeholder="urls..."
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
+                        placeholder="Enter your message here..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
                         required
                       />
                     </FormControl>
-                    <Typography
-                      style={{ marginTop: 15, marginLeft: 10, fontSize: 20 }}
-                    >
-                      Attachment
-                    </Typography>
-                    <div>
-                      <Input
-                        style={{ marginLeft: 10, marginRight: 10}}
-                        type="file"
-                        onChange={handleChange}
-                        value={attachment.value}
-                      />
-                      {progress>0 && <ProgressBar animated now={`${progress}`} label={`${progress}%`} srOnly/>}
-                    </div>
-
                     {isFormSubmitting ? (
                       <div
                         className={clsx(classes.withoutLabel)}
@@ -280,7 +190,7 @@ const BusinessPage = ({ firebase, history }) => {
                     ) : (
                       <FormControl className={clsx(classes.withoutLabel)}>
                         <Button
-                          style={{ margin: 5 }}
+                          style={{ marginLeft:10 }}
                           type="submit"
                           variant="contained"
                           color="primary"
@@ -290,6 +200,7 @@ const BusinessPage = ({ firebase, history }) => {
                         </Button>
                       </FormControl>
                     )}
+                    <div style={{marginTop:20, fontSize:15}}>* Kindly wait patiently, our team will contact you after reviewing your submission</div>
                 </div>
               </Container>
             </div>
@@ -304,8 +215,7 @@ const BusinessPage = ({ firebase, history }) => {
           message="Form Submitted Succesfully"
         />
         <Footer/>
-      </>
-    )
+      </>)
   );
 };
 const Component = withFirebase(BusinessPage);

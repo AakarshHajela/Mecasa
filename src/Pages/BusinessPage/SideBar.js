@@ -16,7 +16,7 @@ const SideBar = ({showBar, setShowBar}) => {
       };
 
     return(
-        <Dialog
+        <Modal
             Transition={Transition}
             className='side-bar'
             open={showBar}
@@ -24,7 +24,7 @@ const SideBar = ({showBar, setShowBar}) => {
         <div>
             <ButtonsComponent/>
         </div>
-        </Dialog>
+        </Modal>
     );
 }
 

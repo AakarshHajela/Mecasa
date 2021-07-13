@@ -11,7 +11,6 @@ const Footer = () => {
         <a style={{color:'white', marginLeft:5}} href="http://explified.com/terms-of-service">
             Terms of Service
         </a>
-        <p style={{color:'white', marginLeft:15}}>Copyright © 2021 EXPLIFIED. All Rights Reserved</p>
         </div>
     );
 }
