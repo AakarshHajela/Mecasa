@@ -58,13 +58,13 @@ const UserSignUp = ({ firebase, history }) => {
   const [lNameError, setLnameError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    firebase.auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth) {
-        history.push("/");
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   firebase.auth.onAuthStateChanged(async (userAuth) => {
+  //     if (userAuth) {
+  //       history.push("/");
+  //     }
+  //   });
+  // }, []);
   // useEffect(() => {
   //   if (!!firebase.user) {
   //     history.push("/");

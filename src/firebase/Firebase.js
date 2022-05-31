@@ -6,14 +6,13 @@ import "firebase/firebase-analytics";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBVPnxv92jfanKyVm39sWwg6DArUbozGV4",
-  authDomain: "explified-app.firebaseapp.com",
-  databaseURL: "https://explified-app.firebaseio.com",
-  projectId: "explified-app",
-  storageBucket: "explified-app.appspot.com",
-  messagingSenderId: "901696391731",
-  appId: "1:901696391731:web:cc7fdab6bb43b23388b146",
-  measurementId: "G-MKQECZX6Q7",
+  apiKey: "AIzaSyDJrpI8kwXgh9gY0eRm3jMmIH7AykFFD5Q",
+  authDomain: "mecasa-fc26b.firebaseapp.com",
+  projectId: "mecasa-fc26b",
+  storageBucket: "mecasa-fc26b.appspot.com",
+  messagingSenderId: "332248383326",
+  appId: "1:332248383326:web:f9d421b105e2043d4599cf",
+  measurementId: "G-F6556PWWMB"
 };
 class FireBase {
   constructor() {
@@ -25,10 +24,33 @@ class FireBase {
     this.db = this.app.firestore();
     this.storage = firebase.storage();
 
+    this.ImageRef = this.db.collection("images");
     this.usersRef = this.db.collection("users");
-    this.businessFormRef = this.db.collection("Business Page");
+    // this.hashRef = this.db.collection("hash");
     this.GoogleProviderID = new firebase.auth.GoogleAuthProvider().providerId;
-    this.PhoneProviderID = new firebase.auth.PhoneAuthProvider().providerId;
+    // this.PhoneProviderID = new firebase.auth.PhoneAuthProvider().providerId;
+  }
+
+  getImageOption = async (option) => {
+    var res;
+    await this.ImageRef.where('option','==',option).get().then((result) => res = result);
+    return res;
+  }
+
+  getURL = async (name) => {
+    this.storage.ref("p3.jpg").getDownloadURL().then((url) => console.log(url));
+  }
+
+  getImages = (folder,file) => {
+    this.storage.ref(`/${folder}/${file}`).put(file)
+      .on("state_changed", alert("success"), alert, () => {
+  
+        // Getting Download Link
+        this.storage.ref(folder).child(file).getDownloadURL()
+          .then((url) => {
+            return url;
+          })
+      });
   }
 
   isLoggedIn = () => {
@@ -119,21 +141,66 @@ class FireBase {
   };
 
 
-  getForms = (status,id) => {
-    return this.businessFormRef.where('id','==',id).where('status','==',status).orderBy("timestamp", "desc").get();
-}
+  getInbox = (to) => {
+    //if(this.businessFormRef.where('to','==',to).where('message','==',this.hashRef.where())
+    return this.businessFormRef.where('to','==',to).orderBy('timestamp','desc').get();
+  }
 
-  addBusinessForm = async (record) => {
-    return this.businessFormRef.add({ ...record });
-  };
+  getHash = (to) => {
+    //if(this.businessFormRef.where('to','==',to).where('message','==',this.hashRef.where())
+    return this.hashRef.where('to','==',to).get();
+  }
+
+  getHashFrom = (from) => {
+    return this.hashRef.where('from','==',from).get();
+  }
+
+  getSent = (from) => {
+    return this.businessFormRef.where('from','==',from).orderBy('timestamp','desc').get();
+  }
+
+  // addBusinessForm = async (id, record) => {
+  //   return this.businessFormRef.doc(id).set({ ...record });
+  // };
 
   updateBusinessForm = async (id, record) => {
     return this.businessFormRef.doc(id).update(record);
   };
 
-  deleteBusinessForm = async (id) => {
+  deleteEmail = async(id) => {
     return this.businessFormRef.doc(id).delete();
-  };
+  }
+
+  getCipher = async(id, timestamp) => {
+    return this.hashRef.where('id','==',id).where('timestamp','==',timestamp).get();
+  }
+
+  getUserIdfromEmail = async(email) => {
+    return this.usersRef.where('email','==',email).get();
+  }
+
+  deleteCipher = async(id,timestamp) => {
+    var ciph = await this.hashRef.where('id','==',id).where('timestamp','==',timestamp);
+    ciph.get().then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+        doc.ref.delete();
+      });
+    });
+  }
+
+  // getDocId = async(from,to,timestamp) => {
+  //   const doc = await this.businessFormRef.where('from','==',from).where('to','==',to).get();
+  //   var id;
+  //   doc.forEach(element => {
+  //     if(element.timestamp === timestamp)
+  //       id = element.docId;
+  //   });
+  //   return id;
+  // }
+
+  // deleteBusinessForm = async (id) => {
+  //   return this.businessFormRef.doc(id).delete();
+  // };
 
   fromSecondsToTimestamp = (seconds, nanoseconds = 0) => {
     if (!seconds) return firebase.firestore.Timestamp.now();

@@ -1,0 +1,51 @@
+
+.container{
+    width:100vw;
+    height: 100%;
+    background-color: aqua;
+    padding: 0;
+    display: inline;
+}
+
+.button{
+    height: 50px;
+    width: 150px;
+    border-radius: 0;
+}
+
+.column {
+    float: left;
+    width: 50%;
+  }
+
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+.column1 {
+    display:inline;
+    float: left;
+    width: 70%;
+    padding:50px;
+    padding-top: 120px;
+  }
+
+.column2 {
+    float: left;
+    width: 30%;
+    padding:50px;
+    padding-top: 250px;
+    text-align: center;
+    justify-content: center;
+  }
+
+.img{
+  position: relative;
+  margin-left: 80px;
+}
+
+.img:hover{
+  border-style: solid;
+}

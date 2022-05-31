@@ -1,0 +1,21 @@
+.parent{
+  display:flex;
+  flex-direction: column;
+  max-width: 400px;
+  flex-wrap: wrap;
+  height: 1600px;
+  padding: 20px;
+}
+
+.card{
+    text-align: center;
+    justify-content: center;
+    margin: 20px;
+    min-height: 100px;
+    width: 300px;
+    height: auto;
+}
+
+.card:hover{
+    cursor:pointer;
+}

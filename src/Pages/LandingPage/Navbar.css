@@ -1,0 +1,53 @@
+.navbar{
+    width: 100%;
+    height: fit-content;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    transition: all .7s ease-in;
+  }
+
+  .header{
+    width: 100%;
+    height: fit-content;
+    background-color: lightgrey;
+    padding:10px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .button{
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .scrolled{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: black;
+  }
+  .logo img{
+    width: 150px;
+  }
+  .navigation{
+    padding: 50px;
+    display: inline-flex;
+    color: #eee;
+    height:fit-content;
+  }
+  .links{
+    padding:20px;
+    margin-top:20px;
+    font-weight:'bold';
+    height:fit-content;
+  }
+
+  .links:hover{
+    cursor: pointer;
+    font-size: large;
+    color: yellow;
+    font-weight: bold;
+  }

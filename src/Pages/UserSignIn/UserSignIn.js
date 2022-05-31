@@ -103,16 +103,16 @@ const UserLogin = ({ firebase, history }) => {
     },
   };
 
-  useEffect(() => {
-    firebase.auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth) {
-        history.push("/");
-      }
-      //  else {
-      //   history.push("/login");
-      // }
-    });
-  }, []);
+  // useEffect(() => {
+  //   firebase.auth.onAuthStateChanged(async (userAuth) => {
+  //     if (userAuth) {
+  //       history.push("/");
+  //     }
+  //     //  else {
+  //     //   history.push("/login");
+  //     // }
+  //   });
+  // }, []);
   // useEffect(() => {
   //   if (!!firebase.user) {
   //     history.push("/");

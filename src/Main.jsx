@@ -6,13 +6,12 @@ import {
   UserSignIn,
   UserSignUp,
   ForgotPassword,
-  BusinessPage,
-  Pending,
-  Ongoing,
-  Done,
 } from "./Pages";
-
-import Rejected from "./Pages/BusinessPage/Rejected";
+import Home from "./Pages/LandingPage/Home";
+import LandingPage from "./Pages/LandingPage/LandingPage";
+import About from "./Pages/LandingPage/About";
+import Services from "./Pages/LandingPage/Services";
+import Portfolio from "./Pages/LandingPage/Portfolio";
 
 const Main = () => {
   return (
@@ -23,14 +22,16 @@ const Main = () => {
         <PrivateRoute
           exact
           path="/"
-          component={(props) => <BusinessPage {...props} />}
+          component={(props) => <LandingPage {...props} />}
         />
 
-        <Route path="/pending" component={(props) => <Pending {...props} />} />
+        <Route path="/home" component={(props) => <Home {...props}/>} />
 
-        <Route path="/ongoing" component={(props) => <Ongoing {...props} />} />
+        <Route path="/about" component={(props) => <About {...props}/>} />
+        
+        <Route path="/services" component={(props) => <Services {...props}/>} />
 
-        <Route path="/done" component={(props) => <Done {...props} />} />
+        <Route path="/portfolio" component={(props) => <Portfolio {...props}/>} />
 
         <Route
           path="/sign-up"
@@ -39,11 +40,6 @@ const Main = () => {
         <Route
           path="/forgot-password"
           component={(props) => <ForgotPassword {...props} />}
-        />
-
-        <Route
-          path="/rejected"
-          component={(props) => <Rejected {...props}/>}
         />
 
         <Route component={Page404} />

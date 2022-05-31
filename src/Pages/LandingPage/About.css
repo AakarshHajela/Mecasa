@@ -1,0 +1,14 @@
+.column {
+    float: left;
+    width: 50%;
+    height: 400px;
+    padding: 50px;
+  }
+
+  .row:after {
+      position: inherit;
+    height: 400px;
+    content: "";
+    display: table;
+    clear: both;
+  }
